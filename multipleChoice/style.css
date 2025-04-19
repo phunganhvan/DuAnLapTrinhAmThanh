@@ -1,0 +1,94 @@
+body{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+svg {
+  width: 50px;
+  height: auto;
+  padding: none;
+}
+
+.house-icon path {
+  fill: white;
+  stroke: black;
+  stroke-width: 1.5;
+}
+
+#homeBtn {
+  display: flex;
+  position: absolute;
+  top: 10px;
+  left: 40px;
+  background-color: #61b5fa;
+  color: black;
+  border: 2px solid #2196f3;
+  padding: 0px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+
+a #homeBtn {
+  text-decoration: none;
+  transition: transform 0.3s ease-in-out;
+  font-size: 16px;
+  display: inline-block;
+}
+
+a #homeBtn:hover {
+  text-decoration: none;
+  transform: scale(1.2);
+}
+
+#acceptBtn {
+  background-color: #a7e0ff;
+  /* nền xanh nhạt */
+  border: 2px solid #45b2f5;
+  /* viền xanh dương nhạt */
+}
+.custom-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 20px;
+  /* bo tròn viền */
+  padding: 10px 20px;
+  color: black;
+  /* màu chữ xanh dương đậm */
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+  /* giãn chữ nhẹ */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  transition: transform 0.3s ease-in-out;
+}
+
+.custom-button:hover {
+  transform: scale(1.2);
+  /* hover màu sáng hơn một chút */
+}
+
+#acceptBtn:hover {
+  color: #6abb14d5;
+}
+
+#retryBtn {
+  background-color: #f7564b;
+  border: 2px solid #f31101;
+  border: 2px solid #f31101;
+}
+
+#retryBtn:hover{
+  color:rgb(248, 164, 134);
+}
+#nextBtn {
+  background-color: #62b365;
+  border: 2px solid #14b319;
+}
+#nextBtn:hover{
+  color:rgb(248, 164, 134);
+}
+  

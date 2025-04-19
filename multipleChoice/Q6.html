@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audio Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #fef9f8;
+      color: black;
+    }
+
+    audio {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .question {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    .answers {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .answer {
+      padding: 10px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 1em;
+    }
+
+    .answer:hover {
+      background-color: #d5d5d5;
+    }
+
+    .correct {
+      background-color: green !important;
+    }
+
+    .incorrect {
+      background-color: red !important;
+    }
+
+    .disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #nextBtn {
+      display: none;
+      background-color: #4caf50;
+      color: black;
+    }
+
+    #retryBtn {
+      display: none;
+      background-color: #f44336;
+      color: black;
+    }
+  </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <a href="../index.html"><button id="homeBtn"><!-- SVG icon -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Mái nhà -->
+        <polygon points="50,10 15,40 85,40" fill="#c62828" class="stroke" />
+
+        <!-- Thân nhà -->
+        <rect x="25" y="40" width="50" height="40" fill="white" class="stroke" />
+
+        <!-- Cửa chính -->
+        <rect x="45" y="60" width="10" height="20" fill="#8d6e63" class="stroke" />
+
+        <!-- Cửa sổ trái -->
+        <rect x="30" y="45" width="10" height="10" fill="#90caf9" class="stroke" />
+
+        <!-- Cửa sổ phải -->
+        <rect x="60" y="45" width="10" height="10" fill="#90caf9" class="stroke" />
+      </svg>
+
+    </button>
+  </a>
+  <h2>🎧 Listen and answer the question 🎧</h2>
+  <audio id="audio" controls>
+    <source src="audio1.mp3" type="audio/mpeg" />
+    Trình duyệt của bạn không hỗ trợ audio.
+  </audio>
+
+  <div class="question" id="questionText"></div>
+  <div class="answers" id="answerContainer"></div>
+
+  <div class="button-group">
+    <button id="retryBtn" class="custom-button"><i class="fa-solid fa-rotate-left"></i> Do again</button>
+    <button id="nextBtn" class="custom-button">Next question <i class="fa-solid fa-right-long"></i></button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        audio: "./Q6.mp3",
+        question: "Question 6: What is this?",
+        answers: [
+          { text: "A bus announcement", correct: true },
+          { text: "A shopping commercial", correct: false },
+          { text: "A weather report", correct: false },
+          { text: "A phone conversation", correct: false }
+        ],
+        link: "q7.html"
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    const audio = document.getElementById("audio");
+    const questionText = document.getElementById("questionText");
+    const answerContainer = document.getElementById("answerContainer");
+    const nextBtn = document.getElementById("nextBtn");
+    const retryBtn = document.getElementById("retryBtn");
+
+    function showQuestion(index) {
+      const q = questions[index];
+      questionText.textContent = q.question;
+      audio.querySelector("source").src = q.audio;
+      audio.load();
+
+      answerContainer.innerHTML = "";
+      nextBtn.style.display = "none";
+      retryBtn.style.display = "none";
+
+      q.answers.forEach((ans, i) => {
+        const btn = document.createElement("button");
+        btn.classList.add("answer");
+        btn.textContent = ans.text;
+        btn.dataset.correct = ans.correct;
+        btn.addEventListener("click", selectAnswer);
+        answerContainer.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(e) {
+      const selected = e.target;
+      const correct = selected.dataset.correct === "true";
+
+      const allButtons = document.querySelectorAll(".answer");
+      allButtons.forEach(btn => {
+        btn.classList.add("disabled");
+        if (btn.dataset.correct === "true") {
+          btn.classList.add("correct");
+        }
+      });
+
+      if (!correct) {
+        selected.classList.add("incorrect");
+      }
+
+      nextBtn.style.display = "inline-block";
+      retryBtn.style.display = "inline-block";
+    }
+
+    nextBtn.addEventListener("click", () => {
+      const nextQuestion = questions[currentQuestionIndex].link;
+      if (nextQuestion) {
+        window.location.href = nextQuestion;
+      } else {
+        questionText.textContent = "Bạn đã hoàn thành tất cả câu hỏi!";
+        answerContainer.innerHTML = "";
+        audio.style.display = "none";
+        nextBtn.style.display = "none";
+        retryBtn.style.display = "none";
+      }
+    });
+
+    retryBtn.addEventListener("click", () => {
+      showQuestion(currentQuestionIndex);
+      document.reload();
+    });
+
+    showQuestion(currentQuestionIndex);
+  </script>
+
+</body>
+
+</html>
