@@ -50,7 +50,7 @@ a #homeBtn:hover {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    border-radius: 20px;
+    border-radius: 20px !important;
     /* bo tròn viền */
     padding: 10px 20px;
     color: black;
