@@ -84,8 +84,9 @@
       color: black
     }
   </style>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.39/Tone.min.js"></script>
 </head>
 
 <body>
@@ -206,7 +207,128 @@
 
     showQuestion(currentQuestionIndex);
   </script>
+  <script>
+    const context = new (window.AudioContext || window.webkitAudioContext)();
 
+    // Tạo MediaElementSource chỉ một lần
+    function setupAudio(audioId, effectTypes = []) {
+      const audioElement = document.getElementById(audioId);
+      Tone.setContext(context);
+
+      // Nếu audio chưa có source node, tạo mới
+      if (!audioElement._sourceNode) {
+        const source = context.createMediaElementSource(audioElement);
+        audioElement._sourceNode = source;
+      }
+
+
+
+
+      let lastNode = audioElement._sourceNode; // Lấy node nguồn của audio
+
+      // Duyệt qua các hiệu ứng cần áp dụng
+      effectTypes.forEach(effect => {
+        switch (effect) {
+          case "slow":
+            audioElement.playbackRate = 0.5; // Chậm lại
+            break;
+
+          case "fast":
+            audioElement.playbackRate = 1.25; // nhanh hơn
+            break;
+
+          case "pitch":
+            const pitchShift = new Tone.PitchShift({ pitch: -10 }).toDestination();
+            Tone.connect(lastNode, pitchShift);
+            lastNode = pitchShift;
+            break;
+
+          case "chorus":
+            const chorus = new Tone.Chorus(2, 4, 0.7, 'sine', 180, 1).toDestination().start();
+            Tone.connect(lastNode, chorus);
+            lastNode = chorus;
+            break;
+
+          case "reverb":
+            const convolver = context.createConvolver();
+            loadImpulseResponse('impulse.mp3').then(irBuffer => {
+              convolver.buffer = irBuffer;
+            });
+            lastNode.connect(convolver);
+            lastNode = convolver;
+            break;
+
+          case "overdrive":
+            // Tạo overdrive (Distortion) để làm "nhiễu" âm thanh
+            const overdrive = context.createGain();
+            overdrive.gain.value = 10; // Tăng gain để tạo hiệu ứng overdrive mạnh mẽ
+            lastNode.connect(overdrive);
+            lastNode = overdrive;
+            break;
+          case "distortion":
+            const distortion = new Tone.Distortion(0.4).toDestination();
+            Tone.connect(lastNode, distortion);
+            lastNode = distortion;
+            break;
+
+          case "echo":
+            const delayNode = context.createDelay();
+            delayNode.delayTime.value = 0.3;
+
+            const feedbackGain = context.createGain();
+            feedbackGain.gain.value = 0.4;
+
+            const wetGain = context.createGain();
+            wetGain.gain.value = 0.5;
+
+            // Tạo mạch echo
+            lastNode.connect(delayNode);
+            delayNode.connect(feedbackGain);
+            feedbackGain.connect(delayNode); // feedback loop
+            delayNode.connect(wetGain);
+            wetGain.connect(context.destination); // output
+
+            // Giữ lại node cuối cùng
+            lastNode = wetGain;
+            break;
+        }
+      });
+
+      lastNode.connect(context.destination);
+
+      audioElement.addEventListener('play', () => {
+        if (context.state === 'suspended') {
+          context.resume();
+        }
+      });
+    }
+
+
+
+
+
+
+
+    async function loadImpulseResponse(url) {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      return context.decodeAudioData(arrayBuffer);
+    }
+
+    // Chỗ này thay từng dòng vào script của html
+    //setupAudio("audio", ["slow"]); //Q1
+    //setupAudio("audio1", ["fast"]);	//Q2
+    //setupAudio("audio", ["pitch"]);	//Q3
+    //setupAudio("audio", ["chorus"]);	//Q4
+    //setupAudio("audio", ["reverb"]);	//Q5
+    //setupAudio("audio", ["echo"]);	//Q6
+    //setupAudio("audio", ["distortion"]); //Q7
+    //setupAudio("audio", ["overdrive"]);	//Q8
+    //setupAudio("audio", ["fast", "pitch"]);//Q9
+    setupAudio("audio", ["echo", "distortion", "chorus"]);
+
+
+  </script>
 </body>
 
 </html>
