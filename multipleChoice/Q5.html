@@ -252,7 +252,7 @@
 
           case "reverb":
             const convolver = context.createConvolver();
-            loadImpulseResponse('impulse.mpe').then(irBuffer => {
+            loadImpulseResponse('./impulse.mp3').then(irBuffer => {
               convolver.buffer = irBuffer;
             });
             lastNode.connect(convolver);
