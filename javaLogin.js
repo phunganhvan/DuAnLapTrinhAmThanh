@@ -31,7 +31,7 @@ loginbut.addEventListener("click", function (e) {
         // Kiểm tra nếu user và mật khẩu đúng
         alert("Đăng nhập thành công");
         setTimeout(() => {
-            window.location.href = "./index.html";
+            window.location.href = "./index1.html";
         }, 1000);
     } else {
         // Thông báo khi sai tài khoản hoặc mật khẩu
